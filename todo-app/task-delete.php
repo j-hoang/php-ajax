@@ -3,14 +3,15 @@
 include('database.php');
 
 if(isset($_POST['id'])) {
-  $id = $_POST['id'];
-  $query = "DELETE FROM task WHERE id = $id"; 
-  $result = mysqli_query($connection, $query);
+  // prepare and bind
+  $stmt = $connection->prepare("DELETE FROM task WHERE id = ?");
+  $stmt->bind_param(i, $id);
 
-  if (!$result) {
-    die('Query Failed.');
-  }
-  echo "Task Deleted Successfully";  
+  // set parameters and execute
+  $id = $_POST['id'];
+  $stmt->execute();
+  $rc = $stmt->affected_rows;
+  echo $rc;
 
 }
 

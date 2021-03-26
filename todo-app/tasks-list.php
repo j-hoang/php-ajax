@@ -2,7 +2,7 @@
 
   include('database.php');
 
-  $query = "SELECT * from task";
+  $query = "SELECT * from task order by id desc";
   $result = mysqli_query($connection, $query);
   if(!$result) {
     die('Query Failed'. mysqli_error($connection));

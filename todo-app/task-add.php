@@ -3,17 +3,19 @@
   include('database.php');
 
 if(isset($_POST['name'])) {
-  # echo $_POST['name'] . ', ' . $_POST['description'];
+  // prepare and bind
+  $stmt = $connection->prepare("INSERT into task(name, description) VALUES (?, ?)");
+  $stmt->bind_param(ss, $task_name, $task_description);
+
+  // set parameters and execute
   $task_name = $_POST['name'];
   $task_description = $_POST['description'];
-  $query = "INSERT into task(name, description) VALUES ('$task_name', '$task_description')";
-  $result = mysqli_query($connection, $query);
+  $rc = $stmt->execute();
 
-  if (!$result) {
-    die('Query Failed.');
-  }
-
-  echo "Task Added Successfully";  
+  if ( false===$rc )
+    echo "Task Add Error!";
+  else
+    echo "Task Added Successfully!";
 
 }
 

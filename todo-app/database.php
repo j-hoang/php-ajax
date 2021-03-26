@@ -1,12 +1,13 @@
 <?php
 
-$connection = mysqli_connect(
-  'localhost', 'root', 'password', 'tasks-database'
-);
+$connection = mysqli_init();
+if (!$connection) {
+    die('mysqli_init failed');
+}
 
-// for testing connection
-#if($connection) {
-#  echo 'database is connected';
-#}
+if (!mysqli_real_connect($connection, 'localhost', 'root', 'password', 'tasks-database', 0, NULL, MYSQLI_CLIENT_FOUND_ROWS)) {
+    die('Connect Error (' . mysqli_connect_errno() . ') '
+            . mysqli_connect_error());
+}
 
 ?>
