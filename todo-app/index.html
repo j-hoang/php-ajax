@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <title>Todo App</title>
     <!-- BOOTSTRAP 4  -->
     <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
@@ -13,21 +14,24 @@
   <body>
 
     <!-- NAVIGATION  -->
-    <nav class="navbar navbar-dark bg-dark">
+    <nav class="navbar navbar-dark bg-dark navbar-expand">
       <a class="navbar-brand" href="#">Tasks App</a>
-
-      <div class="" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-          <div class="form-inline my-2 my-lg-0">
-            <input name="search" id="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          </div>
-        </ul>
+      <div class="ml-auto">
+        <input name="search" id="search" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" maxlength="25">
       </div>
     </nav>
 
     <div class="container">
       <div class="row p-4">
-        <div class="col-md-5 mb-4">
+        <div class="col-lg-5 mb-4">
+          <div class="card mb-4" id="task-result">
+            <div class="card-body">
+              <span class="pull-right clickable close-icon" data-effect="fadeOut"><i class="fa fa-times fa-2x"></i></span>
+              <!-- SEARCH -->
+              <h4>Search Results:</h4>
+              <ul id="container"></ul>
+            </div>
+          </div>
           <div class="card">
             <div class="card-body">
               <!-- FORM TO ADD TASKS -->
@@ -49,16 +53,7 @@
         </div>
 
         <!-- TABLE  -->
-        <div class="col-md-7">
-          <div class="card mb-4" id="task-result">
-            <div class="card-body">
-              <span class="pull-right clickable close-icon" data-effect="fadeOut"><i class="fa fa-times fa-2x"></i></span>
-              <!-- SEARCH -->
-              <h4>Search Results:</h4>
-              <ul id="container"></ul>
-            </div>
-          </div>
-
+        <div class="col-lg-7">
           <table class="table table-bordered table-sm">
             <thead>
               <tr>
@@ -80,7 +75,7 @@
     <!-- jQuery Validate Plugin -->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <!-- toastr notifications -->
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- Frontend Logic -->
     <script src="app.js"></script>
   </body>

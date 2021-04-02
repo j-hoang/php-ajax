@@ -73,15 +73,13 @@ $(document).ready(function() {
         const msgMod = edit === false ? 'Add' : 'Edit';
         console.log(postData, url);
         $.post(url, postData, (response) => {
-          console.log(response);
-
           $('#task-form').trigger('reset');
           edit = false;
 
           if(response == 0)
             toastr.error('Task ' + msgMod + ' Error: Task ' + postData.id + ' Is No Longer Available.', 'Error Alert', {timeOut: 2000});
-          else if (response == "unchanged")
-            toastr.success('Task Unchanged', 'Success Alert', {timeOut: 2000});
+          else if (response == "full")
+            toastr.error('Error: Task List Full. Limit 20 Tasks', 'Error Alert', {timeOut: 2000});
           else
             toastr.success('Task ' + msgMod + 'ed Successfully!', 'Success Alert', {timeOut: 2000});
 
@@ -106,7 +104,7 @@ $(document).ready(function() {
         let template = '';
         tasks.forEach(task => {
           template += `
-                  <tr taskId="${task.id}">
+                  <tr>
                   <td>${task.id}</td>
                   <td>
                   <a href="#" class="task-item text-break" taskId="${task.id}">
@@ -115,9 +113,7 @@ $(document).ready(function() {
                   </td>
                   <td class="text-break">${task.description}</td>
                   <td>
-                    <button class="task-delete btn btn-danger">
-                     <i class="fa fa-trash"></i> Delete
-                    </button>
+                    <button class="task-delete btn btn-danger p-3 fa fa-trash fa-lg" taskId="${task.id}" type="button"></button>
                   </td>
                   </tr>
                 `
@@ -129,39 +125,50 @@ $(document).ready(function() {
 
   // Get a Single Task by Id
   $(document).on('click', '.task-item', (e) => {
-    const element = $(this)[0].activeElement;
+    // const element = $(this)[0].activeElement; // Does not work on iPhone browsers
+    const element = $(e.target);
     const id = $(element).attr('taskId');
+    window.scroll(0, 0);
 
-    $.post('task-single.php', {id}, (response) => {
-
-        console.log("(" + response + ")");
-        const task = JSON.parse(response);
-        if(task == null) {
-          toastr.error('Task ' + id + ' Is No Longer Available.', 'Error Alert', {timeOut: 2000});
-          edit = false;
-          $('#taskHeader').text('Add New Task');
-          $('#taskFormBtn').html('<i class="fa fa-plus-circle"></i> Add Task');
-          $('#task-form').find("input[type=text], textarea").val("");
-          fetchTasks();
-        } else {
-          $('#name').val(task.name);
-          $('#description').val(task.description);
-          $('#taskId').val(task.id);
-          $('#taskHeader').text('Edit Task ' + id);
-          $('#taskFormBtn').html('<i class="fa fa-edit"></i> Edit Task');
-          toastr.success('Task Loaded In Form', 'Success Alert', {timeOut: 2000});
-          edit = true;
+    $.ajax({
+      url: 'task-single.php',
+      data: {id},
+      type: 'POST',
+      success: function (response) {
+        if(!response.error) {
+          console.log("(" + response + ")");
+          const task = JSON.parse(response);
+          if(task == null) {
+            toastr.error('Task ' + id + ' Is No Longer Available.', 'Error Alert', {timeOut: 2000});
+            edit = false;
+            $('#taskHeader').text('Add New Task');
+            $('#taskFormBtn').html('<i class="fa fa-plus-circle"></i> Add Task');
+            $('#task-form').find("input[type=text], textarea").val("");
+            fetchTasks();
+          } else {
+            $('#name').val(task.name);
+            $('#description').val(task.description);
+            $('#taskId').val(task.id);
+            $('#taskHeader').text('Edit Task ' + id);
+            $('#taskFormBtn').html('<i class="fa fa-edit"></i> Edit Task');
+            toastr.success('Task Loaded In Form', 'Success Alert', {timeOut: 2000});
+            edit = true;
+          }
         }
-
+      }
     });
+
+
     e.preventDefault();
   });
 
   // Delete a Single Task
   $(document).on('click', '.task-delete', (e) => {
     if(confirm('Are you sure you want to delete it?')) {
-      const element = $(this)[0].activeElement.parentElement.parentElement;
+      //const element = $(this)[0].activeElement.parentElement.parentElement; // Does not work on iPhone browsers
+      const element = $(e.target);
       const id = $(element).attr('taskId');
+
       $.post('task-delete.php', {id}, (response) => {
 
         if(response == 0)

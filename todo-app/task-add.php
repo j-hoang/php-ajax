@@ -1,21 +1,27 @@
 <?php
 
-  include('database.php');
+include('database.php');
 
 if(isset($_POST['name'])) {
-  // prepare and bind
-  $stmt = $connection->prepare("INSERT into task(name, description) VALUES (?, ?)");
-  $stmt->bind_param(ss, $task_name, $task_description);
+  // Get row count. Limit task list to 20 task
+  $max_task_count = 20;
+  $connection -> query("SELECT * FROM task");
 
-  // set parameters and execute
-  $task_name = $_POST['name'];
-  $task_description = $_POST['description'];
-  $rc = $stmt->execute();
+  if($connection->affected_rows >= $max_task_count) {
+    echo "full";
+  } else {
+    // prepare and bind
+    $stmt = $connection->prepare("INSERT into task(name, description) VALUES (?, ?)");
+    $stmt->bind_param(ss, $task_name, $task_description);
 
-  if ( false===$rc )
-    echo "Task Add Error!";
-  else
-    echo "Task Added Successfully!";
+    // set parameters and execute
+    $task_name = $_POST['name'];
+    $task_description = $_POST['description'];
+    $stmt->execute();
+    $rc = $stmt->affected_rows;
+    echo $rc;
+  }
+
 
 }
 
